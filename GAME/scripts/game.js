@@ -2,11 +2,6 @@
 
 
 var G = {
-
-	//////////////////////////////////
-	animationSpeed: 0.01, playerSpeed: 0.1,
-	//////////////////////////////////
-
 	width: 800,	height: 600,
 	title: "Death in front",
 	ctx: null, canv: null,
@@ -16,7 +11,7 @@ var G = {
 	LMB: false, MMB: false, RMB: false,
 	keys: new Array(256),
 	entities: new Array(501),
-	player: {x: 320, y: 240, hp: 5, orientation: 'N', walking: false, faction: "N", active:true},
+	player: {x: 320, y: 240, hp: 5, orientation: 'N', walking: false, faction: "N", active:true, animationSpeed: 0.01, walkSpeed: 0.1},
 	zombies: new Array(500),
 	mousePos: {x: 0, y: 0},
 	init: function() {
@@ -35,12 +30,16 @@ var G = {
 		G.canv.addEventListener('mousedown', function(evt) {G.getMouseButtons(evt, true);}, false);
 		G.canv.addEventListener('mouseup', function(evt) {G.getMouseButtons(evt, false);}, false);
 		document.getElementById("FTG_sound").play();
-		for(i=0;i<500;i++)
+		for(i=0;i<500;i++){
 			G.entities[i] = G.zombies[i] = {hp:6,								//zombies
 							x:Math.round(Math.random()*800),
 							y:Math.round(Math.random()*600),
 							active:true, orientation: 'N', walking: false,
-							drops:Math.round(Math.random()*20), faction:"Z"};
+							drops:Math.round(Math.random()*20), faction:"Z",
+							walkSpeed: Math.random()/10, animationSpeed: 1};
+			G.entities[i].animationSpeed = G.entities[i].walkSpeed / 10;
+			G.zombies[i].animationSpeed = G.zombies[i].walkSpeed / 10;
+		}
 		G.entities[500] = G.player;
 		
 	},
@@ -59,28 +58,28 @@ var G = {
 				G.entities[i].walking=false;
 			if((G.keys[37]===true&&arrow_keys)||(G.keys[65]&&qwerty)||(G.keys[81]&&azerty)){	//	☃left☃
 				for(i=0;i<501;i++){
-					G.entities[i].x-=dt * G.playerSpeed;
+					G.entities[i].x-=dt * G.entities[i].walkSpeed;
 					G.entities[i].orientation = 'E';
 					G.entities[i].walking=true;
 				}
 			}
 			if((G.keys[38]===true&&arrow_keys)||(G.keys[87]&&qwerty)||(G.keys[90]&&azerty)){	//	☃up☃
 				for(i=0;i<501;i++){
-					G.entities[i].y-=dt * G.playerSpeed;
+					G.entities[i].y-=dt * G.entities[i].walkSpeed;
 					G.entities[i].orientation = 'S';
 					G.entities[i].walking=true;
 				}
 			}
 			if((G.keys[39]===true&&arrow_keys)||(G.keys[68]&&qwerty)||(G.keys[68]&&azerty)){	//	☃right☃
 				for(i=0;i<501;i++){
-					G.entities[i].x+=dt * G.playerSpeed;
+					G.entities[i].x+=dt * G.entities[i].walkSpeed;
 					G.entities[i].orientation = 'W';
 					G.entities[i].walking=true;
 				}
 			}
 			if((G.keys[40]===true&&arrow_keys)||(G.keys[83]&&qwerty)||(G.keys[83]&&azerty)){	//	☃down☃
 				for(i=0;i<501;i++){
-					G.entities[i].y+=dt * G.playerSpeed;
+					G.entities[i].y+=dt * G.entities[i].walkSpeed;
 					G.entities[i].orientation = 'N';
 					G.entities[i].walking=true;
 				}
@@ -156,10 +155,10 @@ var G = {
 						}
 					} else {
 						switch(G.entities[i].orientation) {
-							case 'N': G.ctx.drawImage(sprite, 50 + Math.floor(G.time * G.animationSpeed) % 2 * 50,   0, 50, 100, G.entities[i].x - 10, G.entities[i].y - 20, 20, 40);break;
-							case 'S': G.ctx.drawImage(sprite, 50 + Math.floor(G.time * G.animationSpeed) % 2 * 50, 100, 50, 100, G.entities[i].x - 10, G.entities[i].y - 20, 20, 40);break;
-							case 'E': G.ctx.drawImage(sprite, 50 + Math.floor(G.time * G.animationSpeed) % 2 * 50, 200, 50, 100, G.entities[i].x - 10, G.entities[i].y - 20, 20, 40);break;
-							case 'W': G.ctx.drawImage(sprite, 50 + Math.floor(G.time * G.animationSpeed) % 2 * 50, 300, 50, 100, G.entities[i].x - 10, G.entities[i].y - 20, 20, 40);break;
+							case 'N': G.ctx.drawImage(sprite, 50 + Math.floor(G.time * G.entities[i].animationSpeed) % 2 * 50,   0, 50, 100, G.entities[i].x - 10, G.entities[i].y - 20, 20, 40);break;
+							case 'S': G.ctx.drawImage(sprite, 50 + Math.floor(G.time * G.entities[i].animationSpeed) % 2 * 50, 100, 50, 100, G.entities[i].x - 10, G.entities[i].y - 20, 20, 40);break;
+							case 'E': G.ctx.drawImage(sprite, 50 + Math.floor(G.time * G.entities[i].animationSpeed) % 2 * 50, 200, 50, 100, G.entities[i].x - 10, G.entities[i].y - 20, 20, 40);break;
+							case 'W': G.ctx.drawImage(sprite, 50 + Math.floor(G.time * G.entities[i].animationSpeed) % 2 * 50, 300, 50, 100, G.entities[i].x - 10, G.entities[i].y - 20, 20, 40);break;
 						}
 					}
 				}

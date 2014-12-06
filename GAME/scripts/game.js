@@ -1,19 +1,12 @@
 var G = {
-	width: 640,
-	height: 480,
+	width: 640,	height: 480,
 	title: "Death in front",
-	ctx: null,
-	canv: null,
+	ctx: null, canv: null,
 	gameState: "HELP",
 	interval: null,
-	lastTime: null,
-	time: 0.0,
+	lastTime: null, time: 0.0,
 	keys: new Array(256),
-	player:{
-		x: 320,
-		y: 240,
-		health: 100
-	},
+	player:{x: 320,	y: 240,	health: 100},
 	init: function() {
 		G.canv = document.getElementById("gameCanvas");
 		G.ctx = G.canv.getContext("2d");
@@ -25,11 +18,11 @@ var G = {
 			G.keys[i] = false;
 		}
 		document.onkeydown = function(e) {
-			  e = e || event
+			  e = e || event;
 			  G.keys[e.keyCode] = true;
 		}
 		document.onkeyup = function(e) {
-			  e = e || event
+			  e = e || event;
 			  console.log(e.keyCode);
 			  G.keys[e.keyCode] = false;
 		}

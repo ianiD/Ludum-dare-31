@@ -4,7 +4,7 @@ var G = {
 	title: "Death in front",
 	ctx: null,
 	canv: null,
-	gameState: "LOGOS",
+	gameState: "MENU",
 	interval: null,
 	lastTime: null,
 	time: 0.0,
@@ -33,6 +33,7 @@ var G = {
 			  console.log(e.keyCode);
 			  G.keys[e.keyCode] = false;
 		}
+		setTimeout(function(){alert("Uite aci vin instructiuni");}, 1000);
 	},
 	clearCanvas: function(){
 		G.ctx.fillStyle="#000";
@@ -61,8 +62,14 @@ var G = {
 	},
 	draw: function() {
 		G.clearCanvas();
-		G.ctx.fillStyle="#ffffff";
-		G.ctx.fillRect(G.player.x-10, G.player.y-20, 20, 40);//player
+		switch(gameState){
+			case "PLAY":
+				G.ctx.fillStyle="#ffffff";
+				G.ctx.fillRect(G.player.x-10, G.player.y-20, 20, 40);//player
+				break;
+			case "HELP":
+				
+		}
 	},
 	keydown: function(e){
 		e = e || event;

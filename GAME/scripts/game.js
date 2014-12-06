@@ -34,7 +34,7 @@ var G = {
 			G.entities[i] = G.zombies[i] = {hp:6,								//zombies
 							x:Math.round(Math.random()*800),
 							y:Math.round(Math.random()*600),
-							active:true, orientation: 'N', walking: false,
+							active:false, orientation: 'N', walking: false,
 							drops:Math.round(Math.random()*20), faction:"Z",
 							walkSpeed: Math.random()/10, animationSpeed: 1};
 			G.entities[i].animationSpeed = G.entities[i].walkSpeed / 10;
@@ -138,14 +138,32 @@ var G = {
 			case "PLAY":
 				var playerSprite = document.getElementById("PlayerSprites"),
 					zombieSprite = document.getElementById("ZombieSprites"),
-					sprite;
+					sprite, mouseAngle, gunrot, gunspr = [document.getElementById("Gun0"),
+															document.getElementById("Gun1"),
+															document.getElementById("Gun2"),
+															document.getElementById("Gun3"),
+															document.getElementById("Gun4"),
+															document.getElementById("Gun5"),
+															null,
+															document.getElementById("Gun7")];
 				G.entities.sort(function(a, b){return a.y-b.y;});
 				
 				for(i=0;i<501;i++) {
 					if(!G.entities[i].active)continue;
-					sprite = playerSprite;
 					if(G.entities[i].faction==="Z")
 						sprite = zombieSprite;
+					else {
+						sprite = playerSprite;
+						mouseAngle = Math.atan2(G.entities[i].y-G.mousePos.y, G.entities[i].x-G.mousePos.x);
+						var dmin = 10;
+						for(j=0;j<16;j++){
+							if(dmin>Math.abs(mouseAngle - (j-8)*Math.PI/8)){
+								dmin = Math.abs(mouseAngle - (j-8)*Math.PI/8);
+								gunrot = Math.round(j/2);
+							}
+						}
+						if(gunrot===8)gunrot=0;
+					}
 					if(!G.entities[i].walking) {
 						switch(G.entities[i].orientation) {
 							case 'N': G.ctx.drawImage(sprite, 0,   0, 50, 100, G.entities[i].x - 10, G.entities[i].y - 20, 20, 40);break;
@@ -161,6 +179,7 @@ var G = {
 							case 'W': G.ctx.drawImage(sprite, 50 + Math.floor(G.time * G.entities[i].animationSpeed) % 2 * 50, 300, 50, 100, G.entities[i].x - 10, G.entities[i].y - 20, 20, 40);break;
 						}
 					}
+					G.ctx.drawImage(gunspr[gunrot], G.player.x - 200, G.player.y - 150, 400, 300);
 				}
 				
 				

@@ -1,8 +1,8 @@
 var G = {
-	width: 640,	height: 480,
+	width: 800,	height: 600,
 	title: "Death in front",
 	ctx: null, canv: null,
-	gameState: "HELP",
+	gameState: "LOGOS",
 	interval: null,
 	lastTime: null, time: 0.0,
 	keys: new Array(256),
@@ -33,7 +33,7 @@ var G = {
 	},
 	tick: function() {
 		var now = Date.now();
-		var delta = G.lastTime - now;
+		var delta = now - G.lastTime;
 		G.lastTime = now;
 		G.update(delta);
 		G.draw();
@@ -44,26 +44,39 @@ var G = {
 			qwerty     = true,
 			azerty     = false;
 		if(G.gameState === "PLAY"){
-			if((G.keys[37]===true&&arrow_keys)||(G.keys[65]&&qwerty)||(G.keys[81]&&azerty))	//	down
-				G.player.x+=dt/3;
-			if((G.keys[38]===true&&arrow_keys)||(G.keys[87]&&qwerty)||(G.keys[90]&&azerty))	//	right
-				G.player.y+=dt/3;
-			if((G.keys[39]===true&&arrow_keys)||(G.keys[68]&&qwerty)||(G.keys[68]&&azerty))	//	left
+			if((G.keys[37]===true&&arrow_keys)||(G.keys[65]&&qwerty)||(G.keys[81]&&azerty))	//	up
 				G.player.x-=dt/3;
-			if((G.keys[40]===true&&arrow_keys)||(G.keys[83]&&qwerty)||(G.keys[83]&&azerty))	//	up
+			if((G.keys[38]===true&&arrow_keys)||(G.keys[87]&&qwerty)||(G.keys[90]&&azerty))	//	left
 				G.player.y-=dt/3;
+			if((G.keys[39]===true&&arrow_keys)||(G.keys[68]&&qwerty)||(G.keys[68]&&azerty))	//	right
+				G.player.x+=dt/3;
+			if((G.keys[40]===true&&arrow_keys)||(G.keys[83]&&qwerty)||(G.keys[83]&&azerty))	//	down
+				G.player.y+=dt/3;
 		}
+		if(G.gameState === "LOGOS")
+				if(G.time>3000)
+					G.gameState = "HELP";
 	},
 	draw: function() {
 		G.clearCanvas();
-		switch(G.gameState){
+		switch(G.gameState) {
 			case "PLAY":
 				G.ctx.fillStyle="#ffffff";
 				G.ctx.fillRect(G.player.x-10, G.player.y-20, 20, 40);//player
 				break;
 			case "HELP":
-					var help = document.getElementById("HelpImage");
-					G.ctx.drawImage(help, 0, 0);
+				var help = document.getElementById("HelpImage");
+				G.ctx.drawImage(help, 0, 0);
+				break;
+			case "SET":
+				break;
+			case "WON":
+				break;
+			case "LOST":
+				break;
+			case "LOGOS":
+				var logo = document.getElementById("LogoImage");
+				G.ctx.drawImage(logo, 0, 0);
 				break;
 		}
 	},

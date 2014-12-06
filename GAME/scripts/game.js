@@ -16,7 +16,7 @@ var G = {
 	LMB: false, MMB: false, RMB: false,
 	keys: new Array(256),
 	entities: new Array(501),
-	player: {x: 320, y: 240, hp: 5, orientetion: 'N', walking: false, faction: "N"},
+	player: {x: 320, y: 240, hp: 5, orientation: 'N', walking: false, faction: "N", active:true},
 	zombies: new Array(500),
 	mousePos: {x: 0, y: 0},
 	init: function() {
@@ -39,7 +39,7 @@ var G = {
 			G.entities[i] = G.zombies[i] = {hp:6,								//zombies
 							x:Math.round(Math.random()*800),
 							y:Math.round(Math.random()*600),
-							active:true, orientetion: 'N', walking: false,
+							active:true, orientation: 'N', walking: false,
 							drops:Math.round(Math.random()*20), faction:"Z"};
 		G.entities[500] = G.player;
 		
@@ -54,8 +54,6 @@ var G = {
 		var arrow_keys   = true,
 			qwerty       = true,
 			azerty       = false;
-		for(i=0;i<500;i++)
-			G.entities[i].walking = false;
 		if(G.gameState === "PLAY"){
 			for(i=0;i<501;i++)
 				G.entities[i].walking=false;
@@ -144,11 +142,11 @@ var G = {
 					sprite;
 				G.entities.sort(function(a, b){return a.y-b.y;});
 				
-				for(i=0;i<501;i++){
+				for(i=0;i<501;i++) {
+					if(!G.entities[i].active)continue;
 					sprite = playerSprite;
 					if(G.entities[i].faction==="Z")
 						sprite = zombieSprite;
-					
 					if(!G.entities[i].walking) {
 						switch(G.entities[i].orientation) {
 							case 'N': G.ctx.drawImage(sprite, 0,   0, 50, 100, G.entities[i].x - 10, G.entities[i].y - 20, 20, 40);break;

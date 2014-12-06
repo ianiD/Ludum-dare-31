@@ -17,26 +17,14 @@ var G = {
 		for(i=0; i<256; i++) {
 			G.keys[i] = false;
 		}
-		document.onkeydown = function(e) {
-			  e = e || event;
-			  G.keys[e.keyCode] = true;
-		}
-		document.onkeyup = function(e) {
-			  e = e || event;
-			  G.keys[e.keyCode] = false;
-		}
+		document.onkeydown = function(e) {e = e || event;G.keys[e.keyCode] = true; }
+		document.onkeyup = function(e)   {e = e || event;G.keys[e.keyCode] = false;}
 		document.getElementById("FTG_sound").play();
 	},
-	clearCanvas: function(){
-		G.ctx.fillStyle="#000";
-		G.ctx.fillRect(0,0,G.width,G.height);
-	},
+	clearCanvas: function(){G.ctx.fillStyle="#000";G.ctx.fillRect(0,0,G.width,G.height);},
 	tick: function() {
-		var now = Date.now();
-		var delta = now - G.lastTime;
-		G.lastTime = now;
-		G.update(delta);
-		G.draw();
+		var now = Date.now();var delta = now - G.lastTime;G.lastTime = now;
+		G.update(delta);G.draw();
 	},
 	update: function(dt) {
 		G.time+=dt;

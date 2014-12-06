@@ -47,13 +47,13 @@ var G = {
 	update: function(dt) {
 		G.time+=dt;
 		if(G.keys[37]===true)
-			G.player.x+=dt;
+			G.player.x+=dt/3;
 		if(G.keys[38]===true)
-			G.player.y+=dt;
+			G.player.y+=dt/3;
 		if(G.keys[39]===true)
-			G.player.x-=dt;
+			G.player.x-=dt/3;
 		if(G.keys[40]===true)
-			G.player.y-=dt;
+			G.player.y-=dt/3;
 	},
 	draw: function() {
 		G.clearCanvas();

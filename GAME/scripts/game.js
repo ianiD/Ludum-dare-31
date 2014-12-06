@@ -58,7 +58,7 @@ var G = {
 	draw: function() {
 		G.clearCanvas();
 		G.ctx.fillStyle="#ffffff";
-		G.ctx.fillRect(G.player.x-10, G.player.y-20, 20, 40);
+		G.ctx.fillRect(G.player.x-10, G.player.y-20, 20, 40);//player
 	},
 	keydown: function(e){
 		e = e || event;

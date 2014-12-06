@@ -23,9 +23,9 @@ var G = {
 		}
 		document.onkeyup = function(e) {
 			  e = e || event;
-			  console.log(e.keyCode);
 			  G.keys[e.keyCode] = false;
 		}
+		document.getElementById("FTG_sound").play();
 	},
 	clearCanvas: function(){
 		G.ctx.fillStyle="#000";
@@ -54,12 +54,16 @@ var G = {
 				G.player.y+=dt/3;
 		}
 		if(G.gameState === "LOGOS")
-				if(G.time>3000)
-					G.gameState = "HELP";
+				if(G.time>3000) {
+					G.gameState = "MENU";
+					document.getElementById("TITLE_sound").play();
+				}
 	},
 	draw: function() {
 		G.clearCanvas();
 		switch(G.gameState) {
+			case "MENU":
+				break;
 			case "PLAY":
 				G.ctx.fillStyle="#ffffff";
 				G.ctx.fillRect(G.player.x-10, G.player.y-20, 20, 40);//player

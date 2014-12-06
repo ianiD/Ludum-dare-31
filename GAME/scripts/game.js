@@ -1,13 +1,12 @@
 //☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃
-//☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃
-//☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃
-//☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃
-//☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃
-//☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃
-//☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃
-//☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃
+
 
 var G = {
+
+	//////////////////////////////////
+	animationSpeed: 0.01, playerSpeed: 0.1,
+	//////////////////////////////////
+
 	width: 800,	height: 600,
 	title: "Death in front",
 	ctx: null, canv: null,
@@ -16,7 +15,7 @@ var G = {
 	lastTime: null, time: 0.0,
 	LMB: false, MMB: false, RMB: false,
 	keys: new Array(256),
-	player: {x: 320, y: 240, health: 100},
+	player: {x: 320, y: 240, health: 100, orientation: 'N', walking: false},
 	mousePos: {x: 0, y: 0},
 	init: function() {
 		G.canv = document.getElementById("gameCanvas");
@@ -43,18 +42,31 @@ var G = {
 	},
 	update: function(dt) {
 		G.time+=dt;
-		var arrow_keys = true,
-			qwerty     = true,
-			azerty     = false;
+		var arrow_keys   = true,
+			qwerty       = true,
+			azerty       = false;
+		G.player.walking = false;
 		if(G.gameState === "PLAY"){
-			if((G.keys[37]===true&&arrow_keys)||(G.keys[65]&&qwerty)||(G.keys[81]&&azerty))	//	☃up☃
-				G.player.x-=dt/3;
-			if((G.keys[38]===true&&arrow_keys)||(G.keys[87]&&qwerty)||(G.keys[90]&&azerty))	//	☃left☃
-				G.player.y-=dt/3;
-			if((G.keys[39]===true&&arrow_keys)||(G.keys[68]&&qwerty)||(G.keys[68]&&azerty))	//	☃right☃
-				G.player.x+=dt/3;
-			if((G.keys[40]===true&&arrow_keys)||(G.keys[83]&&qwerty)||(G.keys[83]&&azerty))	//	☃down☃
-				G.player.y+=dt/3;
+			if((G.keys[37]===true&&arrow_keys)||(G.keys[65]&&qwerty)||(G.keys[81]&&azerty)){	//	☃up☃
+				G.player.x-=dt * G.playerSpeed;
+				G.player.orientation = 'W';
+				G.player.walking=true;
+			}
+			if((G.keys[38]===true&&arrow_keys)||(G.keys[87]&&qwerty)||(G.keys[90]&&azerty)){	//	☃left☃
+				G.player.y-=dt * G.playerSpeed;
+				G.player.orientation = 'S';
+				G.player.walking=true;
+			}
+			if((G.keys[39]===true&&arrow_keys)||(G.keys[68]&&qwerty)||(G.keys[68]&&azerty)){	//	☃right☃
+				G.player.x+=dt * G.playerSpeed;
+				G.player.orientation = 'E';
+				G.player.walking=true;
+			}
+			if((G.keys[40]===true&&arrow_keys)||(G.keys[83]&&qwerty)||(G.keys[83]&&azerty)){	//	☃down☃
+				G.player.y+=dt * G.playerSpeed;
+				G.player.orientation = 'N';
+				G.player.walking=true;
+			}
 		}
 		if(G.gameState === "LOGOS")
 				if(G.time>3000) {
@@ -96,8 +108,22 @@ var G = {
 					G.ctx.drawImage(helpfocus, 0, 0);
 				break;
 			case "PLAY":
-				G.ctx.fillStyle="#ffffff";
-				G.ctx.fillRect(G.player.x-10, G.player.y-20, 20, 40);//player
+				var playerSprite = document.getElementById("PlayerSprites");
+				if(!G.player.walking) {
+					switch(G.player.orientation) {
+						case 'N': G.ctx.drawImage(playerSprite, 0,   0, 50, 100, G.player.x - 10, G.player.y - 20, 20, 40);break;
+						case 'S': G.ctx.drawImage(playerSprite, 0, 100, 50, 100, G.player.x - 10, G.player.y - 20, 20, 40);break;
+						case 'E': G.ctx.drawImage(playerSprite, 0, 200, 50, 100, G.player.x - 10, G.player.y - 20, 20, 40);break;
+						case 'W': G.ctx.drawImage(playerSprite, 0, 300, 50, 100, G.player.x - 10, G.player.y - 20, 20, 40);break;
+					}
+				} else {
+					switch(G.player.orientation) {
+						case 'N': G.ctx.drawImage(playerSprite, 50 + Math.floor(G.time * G.animationSpeed) % 2 * 50,   0, 50, 100, G.player.x - 10, G.player.y - 20, 20, 40);break;
+						case 'S': G.ctx.drawImage(playerSprite, 50 + Math.floor(G.time * G.animationSpeed) % 2 * 50, 100, 50, 100, G.player.x - 10, G.player.y - 20, 20, 40);break;
+						case 'E': G.ctx.drawImage(playerSprite, 50 + Math.floor(G.time * G.animationSpeed) % 2 * 50, 200, 50, 100, G.player.x - 10, G.player.y - 20, 20, 40);break;
+						case 'W': G.ctx.drawImage(playerSprite, 50 + Math.floor(G.time * G.animationSpeed) % 2 * 50, 300, 50, 100, G.player.x - 10, G.player.y - 20, 20, 40);break;
+					}
+				}
 				break;
 			case "HELP":
 				var help = document.getElementById("HelpImage"),

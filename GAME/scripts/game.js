@@ -1,6 +1,7 @@
 var G = {
 	width: 640,
 	height: 480,
+	title: "Death in front",
 	ctx: null,
 	canv: null,
 	gameState: "LOGOS",
@@ -9,6 +10,7 @@ var G = {
 	init: function() {
 		G.canv = document.getElementById("gameCanvas");
 		G.ctx = G.canv.getContext("2d");
+		document.title = G.title;
 		G.canv.width = G.width; G.canv.height = G.height;
 		interval = setInterval(G.tick, 0);
 		lastTime = Date.now();

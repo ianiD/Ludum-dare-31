@@ -67,9 +67,17 @@ var G = {
 					G.gameState = "PLAY";
 				if(G.mousePos.x>420&&G.mousePos.y>390&&G.mousePos.x<800&&G.mousePos.y<480)
 					G.gameState = "SET";
-				if(G.mousePos.x>420&&G.mousePos.y>480&&G.mousePos.x<720&&G.mousePos.y<580)
+				if(G.mousePos.x>420&&G.mousePos.y>480&&G.mousePos.x<800&&G.mousePos.y<580)
 					G.gameState = "HELP";
+				G.LMB=false;
 			}
+		if(G.gameState === "HELP"){
+			if(G.LMB){
+				if(G.mousePos.x>360&&G.mousePos.y>300&&G.mousePos.x<740&&G.mousePos.y<550)
+					G.gameState = "MENU";
+				G.LMB=false;
+			}
+		}
 	},
 	draw: function() {
 		G.clearCanvas();
@@ -84,7 +92,7 @@ var G = {
 					G.ctx.drawImage(playfocus, 0, 0);
 				if(G.mousePos.x>420&&G.mousePos.y>390&&G.mousePos.x<800&&G.mousePos.y<480)
 					G.ctx.drawImage(optifocus, 0, 0);
-				if(G.mousePos.x>420&&G.mousePos.y>480&&G.mousePos.x<720&&G.mousePos.y<580)
+				if(G.mousePos.x>420&&G.mousePos.y>480&&G.mousePos.x<800&&G.mousePos.y<580)
 					G.ctx.drawImage(helpfocus, 0, 0);
 				break;
 			case "PLAY":
@@ -92,8 +100,11 @@ var G = {
 				G.ctx.fillRect(G.player.x-10, G.player.y-20, 20, 40);//player
 				break;
 			case "HELP":
-				var help = document.getElementById("HelpImage");
+				var help = document.getElementById("HelpImage"),
+					hoverhelp = document.getElementById("HoverHelpImage");
 				G.ctx.drawImage(help, 0, 0);
+				if(G.mousePos.x>360&&G.mousePos.y>300&&G.mousePos.x<740&&G.mousePos.y<550)
+					G.ctx.drawImage(hoverhelp, 0, 0);
 				break;
 			case "SET":
 				break;

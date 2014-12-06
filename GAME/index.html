@@ -7,14 +7,14 @@
 		<center>
 			<canvas id="gameCanvas" width="640" height="480">I'm sorry, but your current browser does not support the HTML5 &lt;canvas&gt; tag :(</canvas>
 			<br><form>
-					Keyboard layout:<br>
-					<input type="radio" name="keybd" value="QWERTY" checked>QWERTY
-					<input type="radio" name="keybd" value="AZERTY">AZERTY
+					Keyboard layout for movement:<br>
+					<input type="radio" id="qwerty" name="keybd" value="QWERTY">WASD (QWERTY)
+					<input type="radio" id="azerty" name="keybd" value="AZERTY">ZQSD (AZERTY)
+					<input type="radio" id="arrows" name="keybd" value="arrows" checked>Use arrow keys (any)
 				</form> 
 			<br><br><br>Made for the Ludum Dare 31 game jam by Flattened Tesseract Games
 		</center>
-		<div id="hacky_hidden_preloaded_stuff">
-			
+		<div id="hacky_hidden_preloaded_stuff" style="display:none;">
 		</div>
 	</body>
 </html>

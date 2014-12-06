@@ -30,6 +30,7 @@ var G = {
 		}
 		document.onkeyup = function(e) {
 			  e = e || event
+			  console.log(e.keyCode);
 			  G.keys[e.keyCode] = false;
 		}
 	},
@@ -46,13 +47,16 @@ var G = {
 	},
 	update: function(dt) {
 		G.time+=dt;
-		if(G.keys[37]===true)
+		var arrow_keys = document.getElementById('arrows').checked,
+			qwerty     = document.getElementById('qwerty').checked,
+			azerty     = document.getElementById('azerty').checked;
+		if((G.keys[37]===true&&arrow_keys)||(G.keys[65]&&qwerty)||(G.keys[81]&&azerty))	//	down
 			G.player.x+=dt/3;
-		if(G.keys[38]===true)
+		if((G.keys[38]===true&&arrow_keys)||(G.keys[87]&&qwerty)||(G.keys[90]&&azerty))	//	right
 			G.player.y+=dt/3;
-		if(G.keys[39]===true)
+		if((G.keys[39]===true&&arrow_keys)||(G.keys[68]&&qwerty)||(G.keys[68]&&azerty))	//	left
 			G.player.x-=dt/3;
-		if(G.keys[40]===true)
+		if((G.keys[40]===true&&arrow_keys)||(G.keys[83]&&qwerty)||(G.keys[83]&&azerty))	//	up
 			G.player.y-=dt/3;
 	},
 	draw: function() {

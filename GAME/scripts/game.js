@@ -179,7 +179,7 @@ var G = {
 							case 'W': G.ctx.drawImage(sprite, 50 + Math.floor(G.time * G.entities[i].animationSpeed) % 2 * 50, 300, 50, 100, G.entities[i].x - 10, G.entities[i].y - 20, 20, 40);break;
 						}
 					}
-					G.ctx.drawImage(gunspr[gunrot], G.player.x - 200, G.player.y - 150, 400, 300);
+					G.ctx.drawImage(gunspr[gunrot], G.player.x - 100, G.player.y - 75, 200, 150);
 				}
 				
 				

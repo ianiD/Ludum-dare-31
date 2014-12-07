@@ -37,7 +37,7 @@ var G = {
 			G.entities[i] = G.zombies[i] = {hp:6,								//zombies
 							x:Math.round(Math.random()*800), tX:Math.round(Math.random()*800), 
 							y:Math.round(Math.random()*600), tY:Math.round(Math.random()*600), 
-							active:Math.random()<0.01, orientation: 'N', walking: false,			//TODO: drops	FIXME: active
+							active:Math.random()<0.1, orientation: 'N', walking: false,			//TODO: drops	FIXME: active
 							drops:Math.round(Math.random()*20), faction:"Z",
 							walkSpeed: Math.random()/10, animationSpeed: 1};
 			G.entities[i].animationSpeed = G.entities[i].walkSpeed / 10;
@@ -58,17 +58,26 @@ var G = {
 			azerty       = false;
 		switch(G.gameState) {
 			case "PLAY":
+				var pp = false;
 				if((G.keys[37]===true&&arrow_keys)||(G.keys[65]&&qwerty)||(G.keys[81]&&azerty)){	//	left
-					G.player.tX = G.player.x - dt*G.player.walkSpeed;
+					G.player.tX = G.player.x - dt*5;
+					pp=true;
 				}
 				if((G.keys[38]===true&&arrow_keys)||(G.keys[87]&&qwerty)||(G.keys[90]&&azerty)){	//	up
-					G.player.tY = G.player.y - dt*G.player.walkSpeed;
+					G.player.tY = G.player.y - dt*5;
+					pp=true;
 				}
 				if((G.keys[39]===true&&arrow_keys)||(G.keys[68]&&qwerty)||(G.keys[68]&&azerty)){	//	right
-					G.player.tX = G.player.x + dt*G.player.walkSpeed;
+					G.player.tX = G.player.x + dt*5;
+					pp=true;
 				}
 				if((G.keys[40]===true&&arrow_keys)||(G.keys[83]&&qwerty)||(G.keys[83]&&azerty)){	//	down
-					G.player.tY = G.player.y + dt*G.player.walkSpeed;
+					G.player.tY = G.player.y + dt*5;
+					pp=true;
+				}
+				if(!pp){
+					G.player.tX=G.player.x;
+					G.player.tY=G.player.y;
 				}
 				G.ai(dt);
 				break;
@@ -203,8 +212,8 @@ var G = {
 		for(i=0;i<500;i++)	//for every zombie
 			if(Math.random() > 0.95 && G.zombies[i].active){
 				var player_distance = Math.sqrt((G.player.x-G.zombies[i].x)*(G.player.x-G.zombies[i].x)+(G.player.y-G.zombies[i].y)*(G.player.y-G.zombies[i].y));
-				G.zombies[i].tX = G.pointOnCircle(G.player, player_distance/2).x;
-				G.zombies[i].tY = G.pointOnCircle(G.player, player_distance/2).y;
+				G.zombies[i].tX = G.pointOnCircle(G.player, player_distance*3/4).x;
+				G.zombies[i].tY = G.pointOnCircle(G.player, player_distance*3/4).y;
 			}
 		for(i=0;i<501;i++){	//for every entity
 			if(!G.entities[i].active)continue;if(Math.sqrt((G.entities[i].x-G.entities[i].tX)*(G.entities[i].x-G.entities[i].tX)+(G.entities[i].y-G.entities[i].tY)*(G.entities[i].y-G.entities[i].tY))<1){

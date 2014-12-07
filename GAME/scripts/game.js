@@ -12,13 +12,15 @@ var G = {
 	keys: new Array(256),
 	entities: new Array(501),
 	projectiles: new Array(201),
-	player: {x: 320, y: 240, hp: 5, orientation: 'N', walking: false, faction: 0, active:true, animationSpeed: 0.01, walkSpeed: 0.1, tX: 320, tY: 240},
+	player: {x: 320, y: 240, hp: 5, orientation: 'N', walking: false, faction: 0, active:true, animationSpeed: 0.01, walkSpeed: 0.1, tX: 320, tY: 240, dX: 0, dY: 0},
 	deltaRotX: [+1, +1,  0, -1, -1, -1,  0, +1],
 	deltaRotY: [ 0, +1, +1, +1,  0, -1, -1, -1],
+	light:true,
+	tiles: new Array(20),
 	zombies: new Array(500),
 	mousePos: {x: 0, y: 0},
 
-	entitySprite: null,
+	spritesheet: null,
 
 	init: function() {
 		G.canv = document.getElementById("gameCanvas");
@@ -45,8 +47,10 @@ var G = {
 			G.entities[i].animationSpeed = G.entities[i].walkSpeed / 10;
 			G.zombies[i].animationSpeed = G.zombies[i].walkSpeed / 10;
 		}
+		for(i=0;i<20;i++)
+			G.tiles[i] = [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1];
 		G.entities[500] = G.player;
-		G.entitySprite = document.getElementById("EntSpr");
+		G.spritesheet = document.getElementById("EntSpr");
 	},
 	clearCanvas: function(){G.ctx.fillStyle="#000";G.ctx.fillRect(0,0,G.width,G.height);},
 	tick: function() {
@@ -55,9 +59,12 @@ var G = {
 	},
 	update: function(dt) {
 		G.time+=dt;
+		if(dt===0)
+			dt=0.000000001;
+		document.getElementById("time").innerHTML="Debug info:<br>Delta time: "+dt+"<br>Elapsed time: "+G.time+"ms";
 		var arrow_keys   = true,
 			qwerty       = true,
-			azerty       = false;
+			azerty       = true;
 		switch(G.gameState) {
 			case "PLAY":
 				var pp = false;
@@ -65,26 +72,21 @@ var G = {
 					G.setCookie("LD31_FTG_wave",G.curr_wave,1000);
 					G.gameState = "MENU";
 				}
+				G.player.dX=G.player.dY=0;
 				if((G.keys[37]===true&&arrow_keys)||(G.keys[65]&&qwerty)||(G.keys[81]&&azerty)) {	//	left
-					G.player.tX = G.player.x - dt*5;
-					pp=true;
+					G.player.dX = -dt;
 				}
 				if((G.keys[38]===true&&arrow_keys)||(G.keys[87]&&qwerty)||(G.keys[90]&&azerty)) {	//	up
-					G.player.tY = G.player.y - dt*5;
-					pp=true;
+					G.player.dY = -dt;
 				}
 				if((G.keys[39]===true&&arrow_keys)||(G.keys[68]&&qwerty)||(G.keys[68]&&azerty)) {	//	right
-					G.player.tX = G.player.x + dt*5;
-					pp=true;
+					G.player.dX = +dt;
 				}
 				if((G.keys[40]===true&&arrow_keys)||(G.keys[83]&&qwerty)||(G.keys[83]&&azerty)) {	//	down
-					G.player.tY = G.player.y + dt*5;
-					pp=true;
+					G.player.dY = +dt;
 				}
-				if(!pp){
-					G.player.tX=G.player.x;
-					G.player.tY=G.player.y;
-				}
+				G.player.tX=G.player.x+G.player.dX*G.player.walkSpeed;
+				G.player.tY=G.player.y+G.player.dY*G.player.walkSpeed;
 				G.ai(dt);
 				break;
 			case "LOGOS":
@@ -141,56 +143,73 @@ var G = {
 					G.ctx.drawImage(helpfocus, 0, 0);
 				break;
 			case "PLAY":
-				var playerSprite = document.getElementById("PlayerSprites"),
-					zombieSprite = document.getElementById("ZombieSprites"),
-					sprite, mouseAngle, gunrot, gunspr = [document.getElementById("Gun0"),
-															document.getElementById("Gun1"),
-															document.getElementById("Gun2"),
-															document.getElementById("Gun3"),
-															document.getElementById("Gun4"),
-															document.getElementById("Gun5"),
-															null,
-															document.getElementById("Gun7")],
+				var mouseAngle, gunrot, gunspr = [document.getElementById("Gun0"),
+												document.getElementById("Gun1"),
+												document.getElementById("Gun2"),
+												document.getElementById("Gun3"),
+												document.getElementById("Gun4"),
+												document.getElementById("Gun5"),
+												null,
+												document.getElementById("Gun7")],
 					HP = [document.getElementById("Hp0"),document.getElementById("Hp1"),document.getElementById("Hp2"),document.getElementById("Hp3"),document.getElementById("Hp4"),document.getElementById("Hp5")];
-				//G.entities = G.zombies.concat(G.player);
+				G.entities = G.zombies.concat(G.player);
 				G.entities.sort(function(a, b){return a.y-b.y;});
-				
-				for(i=0;i<501;i++) {
-					if(!G.entities[i].active)continue;
-					else {
-						mouseAngle = Math.atan2(G.entities[i].y-G.mousePos.y, G.entities[i].x-G.mousePos.x);
-						var dmin = 10;
-						for(j=0;j<16;j++){
-							if(dmin>Math.abs(mouseAngle - (j-8)*Math.PI/8)){
-								dmin = Math.abs(mouseAngle - (j-8)*Math.PI/8);
-								gunrot = Math.round(j/2);
-							}
-						}
-						if(gunrot===8)gunrot=0;
+				mouseAngle = Math.atan2(G.player.y-G.mousePos.y, G.player.x-G.mousePos.x);
+				var dmin = 10;
+				for(j=0;j<16;j++){
+					if(dmin>Math.abs(mouseAngle - (j-8)*Math.PI/8)){
+						dmin = Math.abs(mouseAngle - (j-8)*Math.PI/8);
+						gunrot = Math.round(j/2);
 					}
+				}
+				if(gunrot===8)
+					gunrot=0;
+				for(i=0;i<20;i++) {
+					for(j=0;j<25;j++){
+						//if(G.tiles[j][i])
+							G.ctx.drawImage(G.spritesheet, 320, 0, 32, 32, j*32, i*32, 32, 32);
+					}
+				}
+				for(i=0;i<501;i++) {			//ENTITIES
+					if(!G.entities[i].active)continue;
 					if(G.entities[i].hp == 0) {
 
 					}
 					if(!G.entities[i].walking) {
 						switch(G.entities[i].orientation) {
-							case 'S': G.ctx.drawImage(G.entitySprite, G.entities[i].faction*150,   0, 50, 100, G.entities[i].x - 10, G.entities[i].y - 20, 20, 40);break;
-							case 'N': G.ctx.drawImage(G.entitySprite, G.entities[i].faction*150, 100, 50, 100, G.entities[i].x - 10, G.entities[i].y - 20, 20, 40);break;
-							case 'W': G.ctx.drawImage(G.entitySprite, G.entities[i].faction*150, 200, 50, 100, G.entities[i].x - 10, G.entities[i].y - 20, 20, 40);break;
-							case 'E': G.ctx.drawImage(G.entitySprite, G.entities[i].faction*150, 300, 50, 100, G.entities[i].x - 10, G.entities[i].y - 20, 20, 40);break;
+							case 'S': G.ctx.drawImage(G.spritesheet, G.entities[i].faction*150,   0, 50, 100, G.entities[i].x - 10, G.entities[i].y - 20, 20, 40);break;
+							case 'N': G.ctx.drawImage(G.spritesheet, G.entities[i].faction*150, 100, 50, 100, G.entities[i].x - 10, G.entities[i].y - 20, 20, 40);break;
+							case 'W': G.ctx.drawImage(G.spritesheet, G.entities[i].faction*150, 200, 50, 100, G.entities[i].x - 10, G.entities[i].y - 20, 20, 40);break;
+							case 'E': G.ctx.drawImage(G.spritesheet, G.entities[i].faction*150, 300, 50, 100, G.entities[i].x - 10, G.entities[i].y - 20, 20, 40);break;
 						}
 					} else {
 						switch(G.entities[i].orientation) {
-							case 'S': G.ctx.drawImage(G.entitySprite, G.entities[i].faction*150 + 50 + Math.floor(G.time * G.entities[i].animationSpeed) % 2 * 50,   0, 50, 100, G.entities[i].x - 10, G.entities[i].y - 20, 20, 40);break;
-							case 'N': G.ctx.drawImage(G.entitySprite, G.entities[i].faction*150 + 50 + Math.floor(G.time * G.entities[i].animationSpeed) % 2 * 50, 100, 50, 100, G.entities[i].x - 10, G.entities[i].y - 20, 20, 40);break;
-							case 'W': G.ctx.drawImage(G.entitySprite, G.entities[i].faction*150 + 50 + Math.floor(G.time * G.entities[i].animationSpeed) % 2 * 50, 200, 50, 100, G.entities[i].x - 10, G.entities[i].y - 20, 20, 40);break;
-							case 'E': G.ctx.drawImage(G.entitySprite, G.entities[i].faction*150 + 50 + Math.floor(G.time * G.entities[i].animationSpeed) % 2 * 50, 300, 50, 100, G.entities[i].x - 10, G.entities[i].y - 20, 20, 40);break;
+							case 'S': G.ctx.drawImage(G.spritesheet, G.entities[i].faction*150 + 50 + Math.floor(G.time * G.entities[i].animationSpeed) % 2 * 50,   0, 50, 100, G.entities[i].x - 10, G.entities[i].y - 20, 20, 40);break;
+							case 'N': G.ctx.drawImage(G.spritesheet, G.entities[i].faction*150 + 50 + Math.floor(G.time * G.entities[i].animationSpeed) % 2 * 50, 100, 50, 100, G.entities[i].x - 10, G.entities[i].y - 20, 20, 40);break;
+							case 'W': G.ctx.drawImage(G.spritesheet, G.entities[i].faction*150 + 50 + Math.floor(G.time * G.entities[i].animationSpeed) % 2 * 50, 200, 50, 100, G.entities[i].x - 10, G.entities[i].y - 20, 20, 40);break;
+							case 'E': G.ctx.drawImage(G.spritesheet, G.entities[i].faction*150 + 50 + Math.floor(G.time * G.entities[i].animationSpeed) % 2 * 50, 300, 50, 100, G.entities[i].x - 10, G.entities[i].y - 20, 20, 40);break;
 						}
 					}
 					if(gunrot!=6&&G.entities[i].faction==0)
 						G.ctx.drawImage(gunspr[gunrot], G.player.x - 100, G.player.y - 75, 200, 150);
 				}
+				//LIGHTMASK
+				//if(G.light)
+				var lightmask = document.getElementById("Light");
+				var nolight = document.getElementById("NoLight");
+				G.ctx.translate(G.player.x, G.player.y);
+				G.ctx.rotate(mouseAngle - Math.PI);
+				G.ctx.drawImage(lightmask, 0, 0, 1024, 1024, 0, 0, 1024, 1024);
+				G.ctx.scale(+1, -1);
+				G.ctx.drawImage(lightmask, 0, 0, 1024, 1024, 0, 0, 1024, 1024);
+				G.ctx.scale(-1, -1);
+				G.ctx.drawImage(nolight, 0, 0, 512, 1024, -0.5, -1024, 1024, 2048);
+				G.ctx.scale(-1, +1);
+				G.ctx.rotate(-mouseAngle + Math.PI);
+				G.ctx.translate(-G.player.x, -G.player.y);
+				//high blocks
 				//GUI
-				G.ctx.drawImage(HP[G.player.hp], 10, 10);
+				G.ctx.drawImage(HP[G.player.hp], 323, 562);
 				break;
 			case "HELP":
 				var help = document.getElementById("HelpImage"),
@@ -217,13 +236,13 @@ var G = {
 	},
 	ai: function(dt) {
 		for(i=0;i<500;i++)	//for every zombie
-			if(Math.random() > 0.95 && G.zombies[i].active){
+			if(Math.random() > 0.975 && G.zombies[i].active){
 				var player_distance = G.distance(G.zombies[i].x, G.zombies[i].y, G.player.x, G.player.y);
-				G.zombies[i].tX = G.pointOnCircle(G.player, player_distance*3/4).x;
-				G.zombies[i].tY = G.pointOnCircle(G.player, player_distance*3/4).y;
+				G.zombies[i].tX = G.pointOnCircle(G.player, player_distance/2).x;
+				G.zombies[i].tY = G.pointOnCircle(G.player, player_distance/2).y;
 			}
 		for(i=0;i<501;i++){	//for every entity
-			if(!G.entities[i].active)continue;
+			if(!G.entities[i].active) continue;
 			if(G.distance(G.entities[i].x, G.entities[i].y, G.entities[i].tX, G.entities[i].tY)<1){
 				G.entities[i].tX = G.entities[i].x;
 				G.entities[i].tY = G.entities[i].y;

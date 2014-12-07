@@ -4,12 +4,13 @@
 		<meta charset="UTF-8"> 
 	</head>
 	<body bgcolor="#2A2F0D" onload="G.init()">
+		<div id="time" style="position: fixed; top:5px; left: 5px; background-color: #000; color: #fff; width: 250px"></div>
 		<center>
 			<br>
 			<canvas id="gameCanvas">I'm sorry, but your current browser does not support the HTML5 &lt;canvas&gt; tag :(</canvas>
-			<br><br><br><br>Made for the Ludum Dare 31 game jam by Flattened Tesseract Games
+			<br>Made for the Ludum Dare 31 game jam by Flattened Tesseract Games
 		</center>
-		<div id="hacky_hidden_way_of_preloading_stuff" stayle="display:none;">
+		<div id="hacky_hidden_way_of_preloading_stuff" style="display:none;">
 
 			<img src="res/HELP/helpscreen.png" id="HelpImage" width="800" height="600">
 			<img src="res/HELP/backhelpscreen.png" id="HoverHelpImage" width="800" height="600">
@@ -21,7 +22,7 @@
 			<img src="res/MAIN MENU/options main.png" id="MainMenuSettingsImage" width="800" height="600">
 			<img src="res/MAIN MENU/main.png" id="MainMenuImage" width="800" height="600">
 
-			<img src="res/PLAY/PLAYER_SPRITESHEET.png" id="EntSpr" width="400" height="800">
+			<img src="res/PLAY/SPRITESHEET.png" id="EntSpr" width="512" height="512">
 			
 			<img src="res/PLAY/gun/GUNR.png" id="Gun0" width="800" height="600">
 			<img src="res/PLAY/gun/GUNRD.png" id="Gun1" width="800" height="600">
@@ -31,6 +32,9 @@
 			<img src="res/PLAY/gun/GUNLU.png" id="Gun5" width="800" height="600">
 			<img src="res/AUX/empty.png" id="EmptyImage" width="800" height="600">
 			<img src="res/PLAY/gun/GUNRU.png" id="Gun7" width="800" height="600">
+
+			<img src="res/PLAY/GUI/light.png" id="Light" width="1024" height="1024">
+			<img src="res/PLAY/GUI/nolight.png" id="NoLight" width="1024" height="1024">
 
 			<img src="res/PLAY/GUI/HP0.png" id="Hp0" width="153" height="28">
 			<img src="res/PLAY/GUI/HP1.png" id="Hp1" width="153" height="28">

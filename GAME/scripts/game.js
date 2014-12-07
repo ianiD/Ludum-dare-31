@@ -51,18 +51,17 @@ var G = {
 					[3, 4, 5, 4, 5, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 3],
 					[3, 6, 8, 6, 8, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 4, 5, 4, 5, 4, 5, 4, 5, 3],
 					[3, 4, 5, 4, 5, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 2, 6, 8, 6, 8, 6, 8, 6, 8, 3],
-					[3, 6, 8, 6, 8, 2, 0, 0, 1, 2, 2, 1, 1, 1, 2, 1, 4, 5, 4, 5, 4, 5, 4, 5, 3],
-					[3, 0, 1, 2, 3, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 6, 8, 6, 8, 6, 8, 6, 8, 3],
+					[3, 6, 8, 6, 8, 2, 1, 1, 1, 2, 2, 1, 1, 1, 2, 1, 4, 5, 4, 5, 4, 5, 4, 5, 3],
+					[3, 1, 1, 2, 3, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 6, 8, 6, 8, 6, 8, 6, 8, 3],
 					[3, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 4, 5, 4, 5, 4, 5, 4, 5, 3],
-					[3, 1, 1, 1, 1, 1, 1, 0, 0, 1, 0, 2, 2, 1, 1, 1, 6, 8, 6, 8, 6, 8, 6, 8, 3],
-					[3, 2, 1, 2, 1, 1, 1, 1, 0, 0, 0, 1, 2, 2, 1, 1, 4, 5, 4, 5, 1, 1, 4, 5, 3],
+					[3, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 1, 1, 1, 6, 8, 6, 8, 6, 8, 6, 8, 3],
+					[3, 2, 1, 2, 1, 1, 1, 1, 2, 2, 2, 1, 2, 2, 1, 1, 4, 5, 4, 5, 1, 1, 4, 5, 3],
 					[3, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 6, 8, 6, 8, 6, 8, 3, 3, 3],
 					[3, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 4, 5, 3, 3, 3, 3, 3],
 					[3, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 3],
 					[3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3],
-					[2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2],
-					[1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-					[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+					[3, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 3],
+					[3, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 3],
 					[3, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 3],
 					[3, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 3],
 					[3, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 3],
@@ -74,18 +73,16 @@ var G = {
 	tick: function() {
 		var now = Date.now();var delta = now - G.lastTime;G.lastTime = now;
 		G.update(delta);G.draw();
+		for(i=0;i<1000;i++){}
 	},
 	update: function(dt) {
 		G.time+=dt;
-		if(dt===0)
-			dt=0.000000001;
 		document.getElementById("time").innerHTML="Debug info:<br>Delta time: "+dt+"<br>Elapsed time: "+G.time+"ms";
 		var arrow_keys   = true,
 			qwerty       = true,
 			azerty       = true;
 		switch(G.gameState) {
 			case "PLAY":
-				var pp = false;
 				if(G.keys[27]) {
 					G.setCookie("LD31_FTG_wave",G.curr_wave,1000);
 					G.gameState = "MENU";
@@ -170,7 +167,7 @@ var G = {
 												null,
 												document.getElementById("Gun7")],
 					HP = [document.getElementById("Hp0"),document.getElementById("Hp1"),document.getElementById("Hp2"),document.getElementById("Hp3"),document.getElementById("Hp4"),document.getElementById("Hp5")];
-				G.entities = G.zombies.concat(G.player);
+				G.entities = G.zombies.concat([G.player]);
 				G.entities.sort(function(a, b){return a.y-b.y;});
 				mouseAngle = Math.atan2(G.player.y-G.mousePos.y, G.player.x-G.mousePos.x);
 				G.player.hp = Math.round(G.time / 100) % 6;
@@ -183,14 +180,11 @@ var G = {
 				}
 				if(gunrot===8)
 					gunrot=0;
-				for(i=0;i<20;i++) 
+				for(i=0;i<19;i++) 
 					for(j=0;j<25;j++)
 						G.ctx.drawImage(G.spritesheet, 288 + (G.tiles[i][j] % 7) * 32, Math.floor(G.tiles[i][j] / 7) * 32, 32, 32, j*32, i*32, 32, 32);
 				for(i=0;i<501;i++) {			//ENTITIES
-					if(!G.entities[i].active)continue;
-					if(G.entities[i].hp == 0) {
-
-					}
+					if(!G.entities[i].active) continue;
 					if(!G.entities[i].walking) {
 						switch(G.entities[i].orientation) {
 							case 'S': G.ctx.drawImage(G.spritesheet, G.entities[i].faction*150,   0, 50, 100, G.entities[i].x - 10, G.entities[i].y - 20, 20, 40);break;

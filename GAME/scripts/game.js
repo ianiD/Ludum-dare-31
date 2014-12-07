@@ -47,8 +47,11 @@ var G = {
 			G.entities[i].animationSpeed = G.entities[i].walkSpeed / 10;
 			G.zombies[i].animationSpeed = G.zombies[i].walkSpeed / 10;
 		}
-		for(i=0;i<20;i++)
-			G.tiles[i] = [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1];
+		for(i=0;i<20;i++){
+			G.tiles[i] = [];
+			for(j=0;j<25;j++)
+				G.tiles[i][j] = Math.round(Math.random()) + 1;
+		}
 		G.entities[500] = G.player;
 		G.spritesheet = document.getElementById("EntSpr");
 	},
@@ -155,6 +158,7 @@ var G = {
 				G.entities = G.zombies.concat(G.player);
 				G.entities.sort(function(a, b){return a.y-b.y;});
 				mouseAngle = Math.atan2(G.player.y-G.mousePos.y, G.player.x-G.mousePos.x);
+				G.player.hp = Math.round(G.time / 100) % 6;
 				var dmin = 10;
 				for(j=0;j<16;j++){
 					if(dmin>Math.abs(mouseAngle - (j-8)*Math.PI/8)){
@@ -166,8 +170,8 @@ var G = {
 					gunrot=0;
 				for(i=0;i<20;i++) {
 					for(j=0;j<25;j++){
-						//if(G.tiles[j][i])
-							G.ctx.drawImage(G.spritesheet, 320, 0, 32, 32, j*32, i*32, 32, 32);
+						if(G.tiles[i][j])
+							G.ctx.drawImage(G.spritesheet, 288 + G.tiles[i][j] * 32, 0, 32, 32, j*32, i*32, 32, 32);
 					}
 				}
 				for(i=0;i<501;i++) {			//ENTITIES

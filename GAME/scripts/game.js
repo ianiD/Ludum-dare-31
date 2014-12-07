@@ -11,7 +11,10 @@ var G = {
 	LMB: false, MMB: false, RMB: false,
 	keys: new Array(256),
 	entities: new Array(501),
-	player: {x: 320, y: 240, hp: 5, orientation: 'N', walking: false, faction: "N", active:true, animationSpeed: 0.01, walkSpeed: 0.1},
+	projectiles: new Array(201),
+	player: {x: 320, y: 240, hp: 5, orientation: 'N', walking: false, faction: "N", active:true, animationSpeed: 0.01, walkSpeed: 0.1, tX: 320, tY: 240},
+	deltaRotX: [+1, +1,  0, -1, -1, -1,  0, +1],
+	deltaRotY: [ 0, +1, +1, +1,  0, -1, -1, -1],
 	zombies: new Array(500),
 	mousePos: {x: 0, y: 0},
 	init: function() {
@@ -32,9 +35,9 @@ var G = {
 		document.getElementById("FTG_sound").play();
 		for(i=0;i<500;i++){
 			G.entities[i] = G.zombies[i] = {hp:6,								//zombies
-							x:Math.round(Math.random()*800),
-							y:Math.round(Math.random()*600),
-							active:false, orientation: 'N', walking: false,
+							x:Math.round(Math.random()*800), tX:Math.round(Math.random()*800), 
+							y:Math.round(Math.random()*600), tY:Math.round(Math.random()*600), 
+							active:Math.random()<0.01, orientation: 'N', walking: false,			//TODO: drops	FIXME: active
 							drops:Math.round(Math.random()*20), faction:"Z",
 							walkSpeed: Math.random()/10, animationSpeed: 1};
 			G.entities[i].animationSpeed = G.entities[i].walkSpeed / 10;
@@ -53,70 +56,57 @@ var G = {
 		var arrow_keys   = true,
 			qwerty       = true,
 			azerty       = false;
-		if(G.gameState === "PLAY"){
-			for(i=0;i<501;i++)
-				G.entities[i].walking=false;
-			if((G.keys[37]===true&&arrow_keys)||(G.keys[65]&&qwerty)||(G.keys[81]&&azerty)){	//	☃left☃
-				for(i=0;i<501;i++){
-					G.entities[i].x-=dt * G.entities[i].walkSpeed;
-					G.entities[i].orientation = 'E';
-					G.entities[i].walking=true;
+		switch(G.gameState) {
+			case "PLAY":
+				if((G.keys[37]===true&&arrow_keys)||(G.keys[65]&&qwerty)||(G.keys[81]&&azerty)){	//	left
+					G.player.tX = G.player.x - dt*G.player.walkSpeed;
 				}
-			}
-			if((G.keys[38]===true&&arrow_keys)||(G.keys[87]&&qwerty)||(G.keys[90]&&azerty)){	//	☃up☃
-				for(i=0;i<501;i++){
-					G.entities[i].y-=dt * G.entities[i].walkSpeed;
-					G.entities[i].orientation = 'S';
-					G.entities[i].walking=true;
+				if((G.keys[38]===true&&arrow_keys)||(G.keys[87]&&qwerty)||(G.keys[90]&&azerty)){	//	up
+					G.player.tY = G.player.y - dt*G.player.walkSpeed;
 				}
-			}
-			if((G.keys[39]===true&&arrow_keys)||(G.keys[68]&&qwerty)||(G.keys[68]&&azerty)){	//	☃right☃
-				for(i=0;i<501;i++){
-					G.entities[i].x+=dt * G.entities[i].walkSpeed;
-					G.entities[i].orientation = 'W';
-					G.entities[i].walking=true;
+				if((G.keys[39]===true&&arrow_keys)||(G.keys[68]&&qwerty)||(G.keys[68]&&azerty)){	//	right
+					G.player.tX = G.player.x + dt*G.player.walkSpeed;
 				}
-			}
-			if((G.keys[40]===true&&arrow_keys)||(G.keys[83]&&qwerty)||(G.keys[83]&&azerty)){	//	☃down☃
-				for(i=0;i<501;i++){
-					G.entities[i].y+=dt * G.entities[i].walkSpeed;
-					G.entities[i].orientation = 'N';
-					G.entities[i].walking=true;
+				if((G.keys[40]===true&&arrow_keys)||(G.keys[83]&&qwerty)||(G.keys[83]&&azerty)){	//	down
+					G.player.tY = G.player.y + dt*G.player.walkSpeed;
 				}
-			}
-		}
-		if(G.gameState === "LOGOS")
-				if(G.time>3000) {
-					G.gameState = "MENU";
-					document.getElementById("TITLE_sound").play();
+				G.ai(dt);
+				break;
+			case "LOGOS":
+					if(G.time>3000) {
+						G.gameState = "MENU";
+						document.getElementById("TITLE_sound").play();
+					}
+					break;
+			case "MENU":
+				if(G.LMB){
+					if(G.mousePos.x>540&&G.mousePos.y>300&&G.mousePos.x<750&&G.mousePos.y<390)
+						G.gameState = "PLAY";
+					if(G.mousePos.x>420&&G.mousePos.y>390&&G.mousePos.x<800&&G.mousePos.y<480)
+						G.gameState = "SET";
+					if(G.mousePos.x>420&&G.mousePos.y>480&&G.mousePos.x<800&&G.mousePos.y<580)
+						G.gameState = "HELP";
+					G.LMB=false;
 				}
-		if(G.gameState === "MENU")
-			if(G.LMB){
-				if(G.mousePos.x>540&&G.mousePos.y>300&&G.mousePos.x<750&&G.mousePos.y<390)
-					G.gameState = "PLAY";
-				if(G.mousePos.x>420&&G.mousePos.y>390&&G.mousePos.x<800&&G.mousePos.y<480)
-					G.gameState = "SET";
-				if(G.mousePos.x>420&&G.mousePos.y>480&&G.mousePos.x<800&&G.mousePos.y<580)
-					G.gameState = "HELP";
-				G.LMB=false;
-			}
-		if(G.gameState === "HELP"){
-			if(G.LMB){
-				if(G.mousePos.x>360&&G.mousePos.y>300&&G.mousePos.x<740&&G.mousePos.y<550)
-					G.gameState = "MENU";
-				G.LMB=false;
-			}
-		}
-		if(G.gameState === "LOST") {
-			G.setCookie("LD31_FTG_wave", 1, 10000);
-			if(G.LMB)
-				if(G.mousePos.x>0&&G.mousePos.y>0&&G.mousePos.x<0&&G.mousePos.y<0)
-					G.gameState = "MENU";
-		}
-		if(G.gameState === "WON") {
-			if(G.LMB)
-				if(G.mousePos.x>0&&G.mousePos.y>0&&G.mousePos.x<0&&G.mousePos.y<0)
-					G.gameState = "MENU";
+				break;
+			case "HELP":
+				if(G.LMB){
+					if(G.mousePos.x>360&&G.mousePos.y>300&&G.mousePos.x<740&&G.mousePos.y<550)
+						G.gameState = "MENU";
+					G.LMB=false;
+				}
+				break;
+			case "LOST":
+				G.setCookie("LD31_FTG_wave", 1, 10000);
+				if(G.LMB)
+					if(G.mousePos.x>0&&G.mousePos.y>0&&G.mousePos.x<0&&G.mousePos.y<0)
+						G.gameState = "MENU";
+				break;
+			case "WON":
+				if(G.LMB)
+					if(G.mousePos.x>0&&G.mousePos.y>0&&G.mousePos.x<0&&G.mousePos.y<0)
+						G.gameState = "MENU";
+				break;
 		}
 	},
 	draw: function() {
@@ -146,6 +136,7 @@ var G = {
 															document.getElementById("Gun5"),
 															null,
 															document.getElementById("Gun7")];
+				//G.entities = G.zombies.concat(G.player);
 				G.entities.sort(function(a, b){return a.y-b.y;});
 				
 				for(i=0;i<501;i++) {
@@ -166,20 +157,21 @@ var G = {
 					}
 					if(!G.entities[i].walking) {
 						switch(G.entities[i].orientation) {
-							case 'N': G.ctx.drawImage(sprite, 0,   0, 50, 100, G.entities[i].x - 10, G.entities[i].y - 20, 20, 40);break;
-							case 'S': G.ctx.drawImage(sprite, 0, 100, 50, 100, G.entities[i].x - 10, G.entities[i].y - 20, 20, 40);break;
-							case 'E': G.ctx.drawImage(sprite, 0, 200, 50, 100, G.entities[i].x - 10, G.entities[i].y - 20, 20, 40);break;
-							case 'W': G.ctx.drawImage(sprite, 0, 300, 50, 100, G.entities[i].x - 10, G.entities[i].y - 20, 20, 40);break;
+							case 'S': G.ctx.drawImage(sprite, 0,   0, 50, 100, G.entities[i].x - 10, G.entities[i].y - 20, 20, 40);break;
+							case 'N': G.ctx.drawImage(sprite, 0, 100, 50, 100, G.entities[i].x - 10, G.entities[i].y - 20, 20, 40);break;
+							case 'W': G.ctx.drawImage(sprite, 0, 200, 50, 100, G.entities[i].x - 10, G.entities[i].y - 20, 20, 40);break;
+							case 'E': G.ctx.drawImage(sprite, 0, 300, 50, 100, G.entities[i].x - 10, G.entities[i].y - 20, 20, 40);break;
 						}
 					} else {
 						switch(G.entities[i].orientation) {
-							case 'N': G.ctx.drawImage(sprite, 50 + Math.floor(G.time * G.entities[i].animationSpeed) % 2 * 50,   0, 50, 100, G.entities[i].x - 10, G.entities[i].y - 20, 20, 40);break;
-							case 'S': G.ctx.drawImage(sprite, 50 + Math.floor(G.time * G.entities[i].animationSpeed) % 2 * 50, 100, 50, 100, G.entities[i].x - 10, G.entities[i].y - 20, 20, 40);break;
-							case 'E': G.ctx.drawImage(sprite, 50 + Math.floor(G.time * G.entities[i].animationSpeed) % 2 * 50, 200, 50, 100, G.entities[i].x - 10, G.entities[i].y - 20, 20, 40);break;
-							case 'W': G.ctx.drawImage(sprite, 50 + Math.floor(G.time * G.entities[i].animationSpeed) % 2 * 50, 300, 50, 100, G.entities[i].x - 10, G.entities[i].y - 20, 20, 40);break;
+							case 'S': G.ctx.drawImage(sprite, 50 + Math.floor(G.time * G.entities[i].animationSpeed) % 2 * 50,   0, 50, 100, G.entities[i].x - 10, G.entities[i].y - 20, 20, 40);break;
+							case 'N': G.ctx.drawImage(sprite, 50 + Math.floor(G.time * G.entities[i].animationSpeed) % 2 * 50, 100, 50, 100, G.entities[i].x - 10, G.entities[i].y - 20, 20, 40);break;
+							case 'W': G.ctx.drawImage(sprite, 50 + Math.floor(G.time * G.entities[i].animationSpeed) % 2 * 50, 200, 50, 100, G.entities[i].x - 10, G.entities[i].y - 20, 20, 40);break;
+							case 'E': G.ctx.drawImage(sprite, 50 + Math.floor(G.time * G.entities[i].animationSpeed) % 2 * 50, 300, 50, 100, G.entities[i].x - 10, G.entities[i].y - 20, 20, 40);break;
 						}
 					}
-					G.ctx.drawImage(gunspr[gunrot], G.player.x - 100, G.player.y - 75, 200, 150);
+					if(gunrot!=6&&G.entities[i].faction=="N")
+						G.ctx.drawImage(gunspr[gunrot], G.player.x - 100, G.player.y - 75, 200, 150);
 				}
 				
 				
@@ -203,12 +195,51 @@ var G = {
 				break;
 		}
 	},
+	pointOnCircle: function(center, radius) {
+		var random_angle = Math.random() * Math.PI * 2;
+		return {x:center.x+Math.cos(random_angle)*radius, y:center.y+Math.sin(random_angle)*radius};
+	},
+	ai: function(dt) {
+		for(i=0;i<500;i++)	//for every zombie
+			if(Math.random() > 0.95 && G.zombies[i].active){
+				var player_distance = Math.sqrt((G.player.x-G.zombies[i].x)*(G.player.x-G.zombies[i].x)+(G.player.y-G.zombies[i].y)*(G.player.y-G.zombies[i].y));
+				G.zombies[i].tX = G.pointOnCircle(G.player, player_distance/2).x;
+				G.zombies[i].tY = G.pointOnCircle(G.player, player_distance/2).y;
+			}
+		for(i=0;i<501;i++){	//for every entity
+			if(!G.entities[i].active)continue;if(Math.sqrt((G.entities[i].x-G.entities[i].tX)*(G.entities[i].x-G.entities[i].tX)+(G.entities[i].y-G.entities[i].tY)*(G.entities[i].y-G.entities[i].tY))<1){
+				G.entities[i].tX = G.entities[i].x;
+				G.entities[i].tY = G.entities[i].y;
+				G.entities[i].walking=false;
+			}
+			G.walk(G.entities[i], dt);
+		}
+	},
+	walk: function(who, dt) {
+		if(who.x<who.tX){
+			who.x+=dt*who.walkSpeed;
+			who.orientation = "E";
+			who.walking=true;
+		}
+		if(who.x>who.tX){
+			who.x-=dt*who.walkSpeed;
+			who.orientation = "W";
+			who.walking=true;
+		}
+		if(who.y<who.tY){
+			who.y+=dt*who.walkSpeed;
+			who.orientation = "S";
+			who.walking=true;
+		}
+		if(who.y>who.tY){
+			who.y-=dt*who.walkSpeed;
+			who.orientation = "N";
+			who.walking=true;
+		}
+	},
 	getMousePos: function(canvas, evt) {
 		var rect = canvas.getBoundingClientRect();
-		return {
-			x: evt.clientX - rect.left,
-			y: evt.clientY - rect.top
-		};
+		return {x: evt.clientX - rect.left,y: evt.clientY - rect.top};
     },
 	getMouseButtons: function(evt, down) {
 		evt = evt || window.event;

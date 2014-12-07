@@ -115,7 +115,7 @@ var G = {
 					if(G.mousePos.x>540&&G.mousePos.y>300&&G.mousePos.x<750&&G.mousePos.y<390)
 						G.gameState = "PLAY";
 					if(G.mousePos.x>420&&G.mousePos.y>390&&G.mousePos.x<800&&G.mousePos.y<480)
-						G.gameState = "SET";
+						G.gameState = "CREDITS";
 					if(G.mousePos.x>420&&G.mousePos.y>480&&G.mousePos.x<800&&G.mousePos.y<580)
 						G.gameState = "HELP";
 					G.LMB=false;
@@ -228,7 +228,9 @@ var G = {
 				if(G.mousePos.x>360&&G.mousePos.y>300&&G.mousePos.x<740&&G.mousePos.y<550)
 					G.ctx.drawImage(hoverhelp, 0, 0);
 				break;
-			case "SET":
+			case "CREDITS":
+				var credits = document.getElementById("Credits");
+					G.ctx.drawImage(credits,0,0);
 				break;
 			case "WON":
 				break;

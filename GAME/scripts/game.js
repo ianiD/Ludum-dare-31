@@ -41,19 +41,34 @@ var G = {
 			G.entities[i] = G.zombies[i] = {hp: 6,								//zombies
 							x:Math.round(Math.random()*800), tX:Math.round(Math.random()*800), 
 							y:Math.round(Math.random()*600), tY:Math.round(Math.random()*600), 
-							active:true, orientation: 'N', walking: false,			//TODO: drops
+							active:false, orientation: 'N', walking: false,			//TODO: drops
 							drops:Math.round(Math.random()*20), faction: 1,
-							walkSpeed: Math.random()/10*1.2, animationSpeed: 1};
+							walkSpeed: (Math.random()*0.075 + 0.025) , animationSpeed: 1};
 			G.entities[i].animationSpeed = G.entities[i].walkSpeed / 10;
 			G.zombies[i].animationSpeed = G.zombies[i].walkSpeed / 10;
 		}
-		for(i=0;i<20;i++){
-			G.tiles[i] = [];
-			for(j=0;j<25;j++)
-				G.tiles[i][j] = Math.round(Math.random()) + 1;
-		}
+		G.tiles =  [[3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3],
+					[3, 4, 5, 4, 5, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 3],
+					[3, 6, 8, 6, 8, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 4, 5, 4, 5, 4, 5, 4, 5, 3],
+					[3, 4, 5, 4, 5, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 2, 6, 8, 6, 8, 6, 8, 6, 8, 3],
+					[3, 6, 8, 6, 8, 2, 0, 0, 1, 2, 2, 1, 1, 1, 2, 1, 4, 5, 4, 5, 4, 5, 4, 5, 3],
+					[3, 0, 1, 2, 3, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 6, 8, 6, 8, 6, 8, 6, 8, 3],
+					[3, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 4, 5, 4, 5, 4, 5, 4, 5, 3],
+					[3, 1, 1, 1, 1, 1, 1, 0, 0, 1, 0, 2, 2, 1, 1, 1, 6, 8, 6, 8, 6, 8, 6, 8, 3],
+					[3, 2, 1, 2, 1, 1, 1, 1, 0, 0, 0, 1, 2, 2, 1, 1, 4, 5, 4, 5, 1, 1, 4, 5, 3],
+					[3, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 6, 8, 6, 8, 6, 8, 3, 3, 3],
+					[3, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 4, 5, 3, 3, 3, 3, 3],
+					[3, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 3],
+					[3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3],
+					[2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2],
+					[1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+					[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+					[3, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 3],
+					[3, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 3],
+					[3, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 3],
+					[3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3]];
 		G.entities[500] = G.player;
-		G.spritesheet = document.getElementById("EntSpr");
+		G.spritesheet = document.getElementById("Sprsheet");
 	},
 	clearCanvas: function(){G.ctx.fillStyle="#000";G.ctx.fillRect(0,0,G.width,G.height);},
 	tick: function() {
@@ -168,12 +183,9 @@ var G = {
 				}
 				if(gunrot===8)
 					gunrot=0;
-				for(i=0;i<20;i++) {
-					for(j=0;j<25;j++){
-						if(G.tiles[i][j])
-							G.ctx.drawImage(G.spritesheet, 288 + G.tiles[i][j] * 32, 0, 32, 32, j*32, i*32, 32, 32);
-					}
-				}
+				for(i=0;i<20;i++) 
+					for(j=0;j<25;j++)
+						G.ctx.drawImage(G.spritesheet, 288 + (G.tiles[i][j] % 7) * 32, Math.floor(G.tiles[i][j] / 7) * 32, 32, 32, j*32, i*32, 32, 32);
 				for(i=0;i<501;i++) {			//ENTITIES
 					if(!G.entities[i].active)continue;
 					if(G.entities[i].hp == 0) {

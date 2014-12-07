@@ -1,0 +1,8 @@
+TODO #LD31:
+--------------------------------------------
+1 Bullets
+2 Collision, obstacles
+3 Building
+4 options menu
+5 hurting
+6 win/lose state

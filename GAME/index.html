@@ -4,7 +4,13 @@
 		<meta charset="UTF-8"> 
 	</head>
 	<body bgcolor="#2A2F0D" onload="G.init()">
-		<div id="time" style="position: fixed; top:5px; left: 5px; background-color: #000; color: #fff; width: 250px"></div>
+		<div id="debug " style="position: fixed; top:5px; left: 5px; background-color: #000; color: #fff; width: 250px; height: 20px;">Debug info:</div>
+		<div id="debug0" style="position: fixed; top:25px; left: 5px; background-color: #000; color: #fff; width: 250px; height: 20px;"></div>
+		<div id="debug1" style="position: fixed; top:45px; left: 5px; background-color: #000; color: #fff; width: 250px; height: 20px;"></div>
+		<div id="debug2" style="position: fixed; top:65px; left: 5px; background-color: #000; color: #fff; width: 250px; height: 20px;"></div>
+		<div id="debug3" style="position: fixed; top:85px; left: 5px; background-color: #000; color: #fff; width: 250px; height: 20px;"></div>
+		<div id="debug4" style="position: fixed; top:105px; left: 5px; background-color: #000; color: #fff; width: 250px; height: 20px;"></div>
+		<div id="debug5" style="position: fixed; top:125px; left: 5px; background-color: #000; color: #fff; width: 250px; height: 20px;"></div>
 		<center>
 			<br>
 			<canvas id="gameCanvas">I'm sorry, but your current browser does not support the HTML5 &lt;canvas&gt; tag :(</canvas>
@@ -16,6 +22,8 @@
 			<img src="res/HELP/backhelpscreen.png" id="HoverHelpImage" width="800" height="600">
 
 			<img src="res/LOGO/ftg-logo.png" id="LogoImage" width="800" height="600">
+
+			<img src="res/CREDITS/credits.png" id="Credits" width="800" height="600">
 
 			<img src="res/MAIN MENU/playmain.png" id="MainMenuPlayImage" width="800" height="600">
 			<img src="res/MAIN MENU/helpmain.png" id="MainMenuHelpImage" width="800" height="600">
@@ -30,11 +38,24 @@
 			<img src="res/PLAY/gun/GUNLD.png" id="Gun3" width="800" height="600">
 			<img src="res/PLAY/gun/GUNL.png" id="Gun4" width="800" height="600">
 			<img src="res/PLAY/gun/GUNLU.png" id="Gun5" width="800" height="600">
-			<img src="res/AUX/empty.png" id="EmptyImage" width="800" height="600">
 			<img src="res/PLAY/gun/GUNRU.png" id="Gun7" width="800" height="600">
+			
+			<img src="res/PLAY/gun/SPNR.png" id="Spn0" width="800" height="600">
+			<img src="res/PLAY/gun/SPNRD.png" id="Spn1" width="800" height="600">
+			<img src="res/PLAY/gun/SPND.png" id="Spn2" width="800" height="600">
+			<img src="res/PLAY/gun/SPNLD.png" id="Spn3" width="800" height="600">
+			<img src="res/PLAY/gun/SPNL.png" id="Spn4" width="800" height="600">
+			<img src="res/PLAY/gun/SPNLU.png" id="Spn5" width="800" height="600">
+			<img src="res/PLAY/gun/SPNRU.png" id="Spn7" width="800" height="600">
+
+			<img src="res/AUXILIAR/empty.png" id="EmptyImage" width="800" height="600">
+			<img src="res/PLAY/newgun.png" id="nwep" width="800" height="600">
 
 			<img src="res/PLAY/GUI/light.png" id="Light" width="1024" height="1024">
 			<img src="res/PLAY/GUI/nolight.png" id="NoLight" width="1024" height="1024">
+
+			<img src="res/AUXILIAR/win.png" id="winImage" width="800" height="600">
+			<img src="res/AUXILIAR/lose.png" id="loseImage" width="800" height="600">
 
 			<img src="res/PLAY/GUI/HP0.png" id="Hp0" width="153" height="28">
 			<img src="res/PLAY/GUI/HP1.png" id="Hp1" width="153" height="28">
@@ -46,6 +67,8 @@
 			☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃☃
 
 			<audio src="res/LOGO/FTG.mp3" id="FTG_sound"><audio src="res/MAIN MENU/menu1.wav" id="TITLE_sound">
+			<audio src="res/PLAY/descend.wav" id="desc"><audio src="res/PLAY/newwep.wav" id="nweap">
+			<audio src="res/PLAY/hit.mp3" id="hit">
 
 		</div>
 	</body>
